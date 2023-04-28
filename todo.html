@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Todo App</title>
+  </head>
+  <body>
+    <input id="todo-title" type="text" placeholder="Todo Title" />
+    <input id="due-date" type="date" placeholder="Due Date" />
+    <button onclick="addTodo()">Add Todo</button>
+
+    <div id="todo-list"></div>
+
+    <script>
+      // MODEL ------------------------------------------------------------------
+      let todos = [
+        {
+          title: "Buy groceries",
+          dueDate: new Date("2023-05-04"),
+          id: "id1",
+        },
+        {
+          title: "Walk the dog",
+          dueDate: new Date("2023-05-06"),
+          id: "id2",
+        },
+        {
+          title: "Visit grandpa",
+          dueDate: new Date("2023-05-07"),
+          id: "id3",
+        },
+      ];
+
+      // CONTROLLER ------------------------------------------------------------------
+
+      function addTodo() {
+        const textbox = document.getElementById("todo-title");
+        const title = textbox.value;
+
+        const datePicker = document.getElementById("due-date");
+        const dueDate = datePicker.value;
+
+        createTodo(title, dueDate);
+        render();
+      }
+
+      function deleteTodo() {
+        const todoList = document.getElementById("todo-list");
+        const todoElement = this.parentElement;
+        const todoIndex = Array.prototype.indexOf.call(
+          todoList.children,
+          todoElement
+        );
+
+        todos.splice(todoIndex, 1);
+
+        todoList.removeChild(todoElement);
+      }
+
+      function createTodo(title, dueDate) {
+        const newTodo = {
+          title: title,
+          dueDate: new Date(dueDate),
+          id: `id${todos.length + 1}`,
+        };
+
+        todos.push(newTodo);
+      }
+
+      // VIEW ------------------------------------------------------------------
+
+      function render() {
+        const todoList = document.getElementById("todo-list");
+        todoList.innerHTML = "";
+
+        todos.forEach(function (todo) {
+          const todoElement = document.createElement("div");
+          const dueDate = new Date(todo.dueDate).toLocaleDateString();
+          todoElement.innerText = `${todo.title} (${dueDate})`;
+
+          const deleteButton = document.createElement("button");
+          deleteButton.innerHTML = "Delete";
+          deleteButton.style.marginLeft = "12px";
+          deleteButton.addEventListener("click", deleteTodo);
+          todoElement.appendChild(deleteButton);
+
+          todoList.appendChild(todoElement);
+        });
+      }
+
+      // Initial render
+      render();
+    </script>
+  </body>
+</html>
